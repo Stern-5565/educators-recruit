@@ -21,7 +21,19 @@ CREATE TABLE dbo.EducatorPlacements
     MediaSource     NVARCHAR(50)  NOT NULL,
     DateContacted   DATE          NOT NULL,
     SchoolPlaced    NVARCHAR(100) NULL,
-    DatePlaced      DATE          NULL
+    DatePlaced      DATE          NULL,
+    CONSTRAINT CK_EducatorPlacements_Gender
+        CHECK (Gender IN (N'male', N'female')),
+    CONSTRAINT CK_EducatorPlacements_MediaSource
+        CHECK (MediaSource IN (N'magazine', N'newspaper', N'social media site', N'word of mouth')),
+    CONSTRAINT CK_EducatorPlacements_DateOrder
+        CHECK (DateOfBirth <= DateContacted
+               AND (DatePlaced IS NULL OR DatePlaced >= DateContacted)),
+    CONSTRAINT CK_EducatorPlacements_PlacementPairing
+        CHECK ((DatePlaced IS NULL AND SchoolPlaced IS NULL)
+               OR (DatePlaced IS NOT NULL AND SchoolPlaced IS NOT NULL)),
+    CONSTRAINT CK_EducatorPlacements_ContactDate
+        CHECK (DateContacted >= '20170217')
 );
 GO
 
